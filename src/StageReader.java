@@ -10,12 +10,18 @@ public class StageReader {
   public static Stage readStage(String path) throws IOException {
     Stage stage = new Stage();
     Properties props = (new Properties());
-    props.load(new FileInputStream(path));
+    try {
+      props.load(new FileInputStream(path));
+    } catch (IOException e) {
+      e.printStackTrace();
+      return stage;
+    }
     for (String key : props.stringPropertyNames()) {
       String value = props.getProperty(key);
       Pattern cell = Pattern.compile("(.)(\\d+)");
       List<Cell> cellsInQuestion = new ArrayList<Cell>();
       Matcher cellMatcher = cell.matcher(key);
+
       if (cellMatcher.matches()) {
         char col = cellMatcher.group(1).charAt(0);
         int row = Integer.parseInt(cellMatcher.group(2));
@@ -24,6 +30,7 @@ public class StageReader {
       } else {
         System.out.println("no match " + key);
       }
+
       for (Cell c : cellsInQuestion) {
         if (value.equals("cat")) {
           stage.actors.add(new Cat(c));

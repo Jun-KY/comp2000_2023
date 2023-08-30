@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -20,14 +21,17 @@ public class Stage {
 
     Optional<Cell> hoveredCell = grid.cellAtPoint(mouseLoc);
 
-    int detailX = grid.cells[0].length * Cell.size + 30;
-    int detailY = 50;
+    int locX = grid.cells[0].length * Cell.size + 30;
+    int locY = 50;
+
     if (hoveredCell.isPresent()) {
       Cell cell = hoveredCell.get();
-      g.drawString("Cell: " + cell.col + cell.row, detailX, detailY);
+      g.setColor(Color.DARK_GRAY);
+      g.drawString("Cell: " + /* String.valueOf( */cell.col/* ) */ + cell.row, locX, locY);
     } else {
-      g.drawString("Outside grid", detailX, detailY);
+      g.drawString("Outside grid", locX, locY);
     }
+
   }
 
 }

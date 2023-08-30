@@ -1,6 +1,7 @@
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class Grid {
   Cell[][] cells = new Cell[20][20];
@@ -29,18 +30,28 @@ public class Grid {
     }
   }
 
+  /* 
+   * Takes a cell consumer (i.3. a function that has a single 'Cell' argument and 
+   * returns 'void') and applies that consumer to each cell in the grid.
+   * @param func The 'Cell' to 'void' function to apply at each spot.
+   */
+
+    public void doToEachCell(Consumer<Cell> func){
+      
+    }
+
   public Optional<Cell> cellAtPoint(Point p) {
     if (p == null) {
       return Optional.empty();
     }
     int col = (p.x - 10) / Cell.size;
     int row = (p.y - 10) / Cell.size;
-
-    if (col >= 0 && col < cells.length && row >= 0 && row < cells[col].length) {
-      return Optional.of(cells[col][row]);
-    } else {
-      return Optional.empty();
-    }
+    return cellAtColRow(col, row);
+    // if (col >= 0 && col < cells.length && row >= 0 && row < cells[col].length) {
+    // return Optional.of(cells[col][row]);
+    // } else {
+    // return Optional.empty();
+    // }
   }
 
   public Optional<Cell> cellAtColRow(int c, int r) {
