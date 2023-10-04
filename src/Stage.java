@@ -11,7 +11,10 @@ public class Stage {
   List<Cell> cellOverlay;
   Optional<Actor> actorInAction;
 
-  enum State {ChoosingActor, SelectingNewLocation, BotMoving}
+  enum State {
+    ChoosingActor, SelectingNewLocation, BotMoving
+  }
+
   State currentState;
 
   public Stage() {
@@ -24,29 +27,29 @@ public class Stage {
 
   public void paint(Graphics g, Point mouseLoc) {
     // do we have AI moves to make?
-    if(currentState == State.BotMoving) {
-      for(Actor a: actors) {
-        if(!a.isHuman()) {
+    if (currentState == State.BotMoving) {
+      for (Actor a : actors) {
+        if (!a.isHuman()) {
           List<Cell> possibleLocs = getClearRadius(a.loc, a.moves);
           Cell nextLoc = a.strat.chooseNextLoc(possibleLocs);
           a.setLocation(nextLoc);
         }
       }
       currentState = State.ChoosingActor;
-      for(Actor a: actors) {
+      for (Actor a : actors) {
         a.turns = 1;
       }
     }
     grid.paint(g, mouseLoc);
     grid.paintOverlay(g, cellOverlay, new Color(0f, 0f, 1f, 0.5f));
-    for(Actor a: actors) {
+    for (Actor a : actors) {
       a.paint(g);
     }
 
     // where to draw text in the information area
     final int hTab = 10;
     final int blockVT = 35;
-    final int margin = 21*blockVT;
+    final int margin = 21 * blockVT;
     int yLoc = 20;
 
     // state display
@@ -54,7 +57,7 @@ public class Stage {
     g.drawString(currentState.toString(), margin, yLoc);
     yLoc = yLoc + blockVT;
     Optional<Cell> underMouse = grid.cellAtPoint(mouseLoc);
-    if(underMouse.isPresent()) {
+    if (underMouse.isPresent()) {
       Cell hoverCell = underMouse.get();
       g.setColor(Color.DARK_GRAY);
       String coord = String.valueOf(hoverCell.col) + String.valueOf(hoverCell.row);
@@ -64,20 +67,20 @@ public class Stage {
     // agent display
     final int vTab = 15;
     final int labelIndent = margin + hTab;
-    final int valueIndent = margin + 3*blockVT;
-    yLoc = yLoc + 2*blockVT;
-    for(int i = 0; i < actors.size(); i++){
+    final int valueIndent = margin + 3 * blockVT;
+    yLoc = yLoc + 2 * blockVT;
+    for (int i = 0; i < actors.size(); i++) {
       Actor a = actors.get(i);
-      yLoc = yLoc + 2*blockVT;
+      yLoc = yLoc + 2 * blockVT;
       g.drawString(a.getClass().toString(), margin, yLoc);
-      g.drawString("location:", labelIndent, yLoc+vTab);
-      g.drawString(Character.toString(a.loc.col) + Integer.toString(a.loc.row), valueIndent, yLoc+vTab);
-      g.drawString("artificiality:", labelIndent, yLoc+2*vTab);
-      g.drawString(a.isHuman() ? "Human" : "Bot", valueIndent, yLoc+2*vTab);
-      g.drawString("strategy:", labelIndent, yLoc+3*vTab);
-      g.drawString(a.strat.toString(), valueIndent, yLoc+3*vTab);
-    }    
-    yLoc = yLoc + 3*blockVT;
+      g.drawString("location:", labelIndent, yLoc + vTab);
+      g.drawString(Character.toString(a.loc.col) + Integer.toString(a.loc.row), valueIndent, yLoc + vTab);
+      g.drawString("artificiality:", labelIndent, yLoc + 2 * vTab);
+      g.drawString(a.isHuman() ? "Human" : "Bot", valueIndent, yLoc + 2 * vTab);
+      g.drawString("strategy:", labelIndent, yLoc + 3 * vTab);
+      g.drawString(a.strat.toString(), valueIndent, yLoc + 3 * vTab);
+    }
+    yLoc = yLoc + 3 * blockVT;
     Motif torch = new Motif("assets/torch.png");
     Float phase = 0.5f;
     torch.draw(g, labelIndent, yLoc, Color.getHSBColor(phase, 0.5f, 1.0f));
@@ -85,18 +88,18 @@ public class Stage {
 
   public List<Cell> getClearRadius(Cell from, int size) {
     List<Cell> init = grid.getRadius(from, size);
-    for(Actor a: actors) {
+    for (Actor a : actors) {
       init.remove(a.loc);
     }
     return init;
   }
 
   public void mouseClicked(int x, int y) {
-    switch(currentState) {
+    switch (currentState) {
       case ChoosingActor:
         actorInAction = Optional.empty();
-        for(Actor a: actors) {
-          if(a.loc.contains(x, y) && a.isHuman()) {
+        for (Actor a : actors) {
+          if (a.loc.contains(x, y) && a.isHuman()) {
             cellOverlay = grid.getRadius(a.loc, a.moves);
             actorInAction = Optional.of(a);
             currentState = State.SelectingNewLocation;
@@ -105,22 +108,22 @@ public class Stage {
         break;
       case SelectingNewLocation:
         Optional<Cell> clicked = Optional.empty();
-        for(Cell c: cellOverlay) {
-          if(c.contains(x, y)) {
+        for (Cell c : cellOverlay) {
+          if (c.contains(x, y)) {
             clicked = Optional.of(c);
           }
         }
         cellOverlay = new ArrayList<Cell>();
-        if(clicked.isPresent() && actorInAction.isPresent()) {
+        if (clicked.isPresent() && actorInAction.isPresent()) {
           actorInAction.get().setLocation(clicked.get());
           actorInAction.get().turns--;
           int humansWithMovesLeft = 0;
-          for(Actor a: actors) {
-            if(a.isHuman() && a.turns > 0) {
+          for (Actor a : actors) {
+            if (a.isHuman() && a.turns > 0) {
               humansWithMovesLeft++;
             }
           }
-          if(humansWithMovesLeft > 0) {
+          if (humansWithMovesLeft > 0) {
             currentState = State.ChoosingActor;
           } else {
             currentState = State.BotMoving;

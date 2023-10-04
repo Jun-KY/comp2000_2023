@@ -22,7 +22,7 @@ public abstract class Actor {
   }
 
   public void paint(Graphics g) {
-    for(Polygon p: display) {
+    for (Polygon p : display) {
       g.setColor(color);
       g.fillPolygon(p);
       g.setColor(Color.GRAY);
@@ -38,7 +38,7 @@ public abstract class Actor {
 
   public void setLocation(Cell inLoc) {
     loc = inLoc;
-    if(loc.row % 2 == 0) {
+    if (loc.row % 2 == 0) {
       strat = new RandomMove();
     } else {
       strat = new LeftMostMove();
