@@ -10,6 +10,7 @@ public class Stage {
   List<Actor> actors;
   List<Cell> cellOverlay;
   Optional<Actor> actorInAction;
+  AnimationBeat animationBeat;
 
   enum State {
     ChoosingActor, SelectingNewLocation, BotMoving
@@ -23,6 +24,7 @@ public class Stage {
     cellOverlay = new ArrayList<Cell>();
     actorInAction = Optional.empty();
     currentState = State.ChoosingActor;
+    animationBeat = AnimationBeat.getInstance();
   }
 
   public void paint(Graphics g, Point mouseLoc) {
@@ -63,6 +65,8 @@ public class Stage {
       String coord = String.valueOf(hoverCell.col) + String.valueOf(hoverCell.row);
       g.drawString(coord, margin, yLoc);
     }
+    g.drawString("Phase: " + animationBeat.inPhase(), 10, 10);
+    g.drawString("Phase Completion: " + animationBeat.phaseCompletion() + "%", 10, 30);
 
     // agent display
     final int vTab = 15;

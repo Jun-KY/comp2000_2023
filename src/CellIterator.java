@@ -22,10 +22,10 @@ public class CellIterator implements Iterator<Cell> {
   public Cell next() {
     Cell ret = data[outer][inner];
     inner++;
-    if (inner >= data[outer].length) {
+    if(inner >= data[outer].length) {
       inner = 0;
       outer++;
-      if (outer >= data.length) {
+      if(outer >= data.length) {
         runOut = true;
       }
     }
